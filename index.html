@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link href="css/mobile.css" rel="stylesheet">
+        <script type="text/javascript" src="js/lib/zepto.min.js"></script>
+        <script type="text/javascript" src="js/lib/zepto.extras.js"></script>
+        <script type="text/javascript" src="js/lib/underscore-min.js"></script>
+        <script type="text/javascript" src="js/lib/backbone-min.js"></script>
+        <script type="text/javascript" src="js/lib/backbone.routerFilters.js"></script>
+        <!-- Open Report Specific -->
+        <script type="text/javascript" src="js/lib/openreport.builder.js"></script>
+    </head>
+
+    <body>
+        <div id="pagebody">
+            <div class="header-fixed">
+                <header id="toolbar" class="header">
+                    <button id="back-button" class="pull-left"><span class="icons">&#59229;</span></button>
+                    <button id="menu-button" class="pull-right"><span class="icons">&#9776;</span></button>
+                    <h1>Open Report</h1>
+
+                </header>
+            </div>
+            <div class="container">
+                <section id="page-content" class="content"></section>
+            </div>
+            <div class="footer_container">
+                <footer class="footer"><span id="version"></span> (c)2013 Austin Conner Group<button href="#" id="info-button" class="pull-right"><span class="icons">&#59141;</span></button></footer>
+            </div>
+        </div>
+
+    <!-- Templates -->
+    <script id="homeView" type="text/template">
+        <div class="view">
+        <h2>Home View</h2>
+        <ul class="list">
+        <li>
+        <a class="is-active" href="#login">Login<span class="pull-right icons">&#59238;</span></a>
+        </li>
+        </ul>
+        </div>
+    </script>
+
+    <script id="menuView" type="text/template">
+        <div class="view">
+        <h2>Open Report Menu</h2>
+        <ul class="list">
+        <li>
+        <a class="is-active" href="#reportForms">Reporting Forms<span class="pull-right icons">&#59238;</span></a>
+        </li>
+        <li>
+        <a class="is-active" href="#">Report Assigments<span class="pull-right icons">&#59238;</span></a>
+        </li>
+        <li>
+        <a class="is-active" href="#">Recent Reports<span class="pull-right icons">&#59238;</span></a>
+        </li>
+        <li>
+        <a class="is-active" href="#settings">Settings<span class="pull-right icons">&#59238;</span></a>
+        </li>
+        </ul>
+        </div>
+    </script>
+    <script id="aboutView" type="text/template">
+        <div class="view">
+        <h2>About Open Report</h2>
+        </div>
+    </script>
+    <script id="loginView" type="text/template">
+        <div class="view">
+            <h3 class="view-header">Login</h3>
+            <form class="form-horizontal">
+              <div class="control-group">
+                <label class="control-label" for="inputEmail">Email</label>
+                <div class="controls">
+                  <input type="text" id="inputEmail" value="{{= email}}"placeholder="Email">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="inputPassword">Password</label>
+                <div class="controls">
+                  <input type="password" id="inputPassword" value="{{= password}}" placeholder="Password">
+                </div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+                  <button type="submit" class="btn" id="loginButton">Sign in</button>
+                </div>
+              </div>
+            </form>
+        </div>
+    </script>
+
+    <script id="settingsView" type="text/template">
+    <div class="view">
+        <h2>Settings</h2>
+        <form id="frm-settings" onsubmit="return false;">
+        <fieldset>
+            <div data-rules="required:url" data-type="text" data-name="apiURL">
+                <label for="apiURL">Service endpoint</label>
+                <input type="text" id="apiURL" name="apiURL">
+                <span></span>
+            </div>
+        <input id="submitForm" type="submit" value="Submit">
+        </fieldset>
+        </form>
+    </div>
+    </script>
+
+    <!-- script id="reportTasksView" type="text/template">
+    <div class="view">
+      <h3 class="view-header">Report Tasks</h3>
+      <ul class="list">
+        {{ _(tasks).each(function(task) { }}
+        <li>
+          <a href="#reportTasks/{{= task.get('id') }}">{{= task.get('title') }}<span class="pull-right icons">&#59238;</span></a>
+
+        </li>
+        {{ }); }}
+      </ul>
+    </div>
+    </script -->
+
+    <script id="reportFormsView" type="text/template">
+    <div class="view">
+      <h3 class="view-header">Report Forms</h3>
+      <ul class="list">
+        {{ _(forms).each(function(form) { }}
+        <li>
+          <a href="#form/{{= form.get('id') }}">{{= form.get('title') }}<span class="pull-right icons">&#59238;</span>
+
+        </li>
+        {{ }); }}
+      </ul>
+    </div>
+    </script>
+
+    <script id="reportForm" type="text/template">
+    <div class="view">
+      <h3 class="view-header">Report: {{= title }}</h3>
+      <form id="{{= meta.name }}" onsubmit="return false;">
+      </form>
+    </script>
+
+    <!-- App -->
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <!-- Models -->
+    <script type="text/javascript" src="js/models/ReportTask.js"></script>
+    <script type="text/javascript" src="js/models/ReportForm.js"></script>
+    <script type="text/javascript" src="js/models/ReportRecord.js"></script>
+    <!-- Views -->
+    <script type="text/javascript" src="js/views/LoginView.js"></script>
+    <script type="text/javascript" src="js/views/PageView.js"></script>
+    <script type="text/javascript" src="js/views/SettingsView.js"></script>
+    <script type="text/javascript" src="js/views/TaskView.js"></script>
+    <script type="text/javascript" src="js/views/FormView.js"></script>
+    <!-- Routes -->
+    <script type="text/javascript" src="js/router.js"></script>
+
+    <!-- RUN -->
+    <script type="text/javascript">
+
+        if (!$){$ = Zepto}; //zepto fix
+        // startup
+        $(app.init);
+    </script>
+
+    </body>
+</html>
