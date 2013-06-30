@@ -62,6 +62,8 @@ app.views.FormView = Backbone.View.extend({
         $(this.el).html(template);
         $("#"+this.model.attributes.meta.name).buildForm(this.model.attributes.meta);
 
+        $("#"+this.model.attributes.meta.name).append('<input id="submitForm" type="submit" value="Submit">');
+
         return this;
     },
 
@@ -76,12 +78,11 @@ app.views.FormView = Backbone.View.extend({
         $.validateForm($("#"+this.model.attributes.meta.name),
             function(){  // success
                 var reportData = new app.models.ReportRecord();
-
-                //reportData.save({
-                //    task_id:this.model.attributes.task_id,
-                //    form_id:this.model.attributes.id,
-                //    meta:$("#"+this.model.attributes.meta.name).serializeObject()
-                //}, console.log('saved'));
+                reportData.save({
+                    task_id:this.model.attributes.task_id,
+                    form_id:this.model.attributes.id,
+                    meta:$("#"+this.model.attributes.meta.name).serializeObject()
+                }, console.log('saved'));
 
                  console.log('pass');
              },
@@ -89,8 +90,6 @@ app.views.FormView = Backbone.View.extend({
                  console.log('fail');
              }
         );
-
-
 
     },
     //back: function() {

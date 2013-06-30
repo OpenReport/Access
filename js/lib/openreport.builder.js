@@ -34,47 +34,54 @@
 	base.$el.data("buildForm", base);
 	base.init = function(){
 
-	  if( typeof( formMeta ) === "undefined" || formMeta === null ) formMeta = {"name":"form",};
+	  if( typeof( formMeta ) === "undefined" || formMeta === null ) formMeta = {};
 
 	  base.formMeta = formMeta;
 	  base.options = $.extend({},$.buildForm.defaultOptions, options);
 
 	  // Build the form
-	  // create fieldset
-	  var fs = base.$el.append(document.createElement('fieldset')).find('fieldset');
-	  // loop through form definations
-	  for (index in formMeta.fields){
-		field = formMeta.fields[index];
-		// field wrapper
-		fieldSet = document.createElement('div');
-		fieldSet.setAttribute("class", base.options.ctrlClass);
-		fieldSet.setAttribute("data-rules", field.rules);
-		fieldSet.setAttribute("data-type", field.type);
-		fieldSet.setAttribute("data-name", field.name);
-		fs.append(fieldSet);
-		// add form label
-		$(fieldSet).append(helper.createLabel(field.name, field.display));
-		// render input fields
-		switch(field.type){
-		  case 'text':
-			  helper.buildTextBox(fieldSet, field.name);
-			  break;
-		  case 'paragraph':
-			  helper.buildParagraphBox(fieldSet, field.name);
-			  break;
-		  case 'checkbox':
-			  helper.buildCheckbox(fieldSet, field.name, field.values);
-			  break;
-		  case 'radio':
-			  helper.buildRadio(fieldSet, field.name, field.values);
-			  break;
-		  case 'select':
-			  helper.buildSelect(fieldSet, field.name, field.values);
-			  break;
+	  for(fsi in formMeta.fieldset){
+		fieldset = formMeta.fieldset[fsi];
+		var fs = document.createElement('fieldset');
+		fs.setAttribute("id", fieldset.name);
+		fs.setAttribute("class", base.options.fsClass);
+		var $fieldset = base.$el.append(fs).find('fieldset');
+		if(fieldset.legend !== ''){
+		  $fieldset.append(document.createElement('legend').appendChild(document.createTextNode(fieldset.legend)));
 		}
-		$(fieldSet).append('<span class="error"></span>');
+		// create fieldset contrils
+		for (index in fieldset.fields){
+		  field = fieldset.fields[index];
+		  // field wrapper
+		  fieldCtrl = document.createElement('div');
+		  fieldCtrl.setAttribute("class", base.options.ctrlClass);
+		  fieldCtrl.setAttribute("data-rules", field.rules);
+		  fieldCtrl.setAttribute("data-type", field.type);
+		  fieldCtrl.setAttribute("data-name", field.name);
+		  $fieldset.append(fieldCtrl);
+		  // add form label
+		  $(fieldCtrl).append(helper.createLabel(field.name, field.display));
+		  // render input fields
+		  switch(field.type){
+			case 'text':
+				helper.buildTextBox(fieldCtrl, field.name);
+				break;
+			case 'paragraph':
+				helper.buildParagraphBox(fieldCtrl, field.name);
+				break;
+			case 'checkbox':
+				helper.buildCheckbox(fieldCtrl, field.name, field.values);
+				break;
+			case 'radio':
+				helper.buildRadio(fieldCtrl, field.name, field.values);
+				break;
+			case 'select':
+				helper.buildSelect(fieldCtrl, field.name, field.values);
+				break;
+		  }
+		  $(fieldCtrl).append('<span class="error"></span>');
+		}
 	  }
-	  fs.append('<input id="submitForm" type="submit" value="Submit">');
 
 	};
 	// private functions
@@ -168,6 +175,7 @@
   $.buildForm.defaultOptions = {
 	  ctrlClass: "ctrl",
 	  lblClass: "ctrlLabel",
+	  fsClass: "crtlSet",
 	  fldClass: "ctrlField",
 	  errClass: "ctrlError"
   };
