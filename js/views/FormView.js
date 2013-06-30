@@ -57,11 +57,21 @@ app.views.FormView = Backbone.View.extend({
     },
 
     render: function () {
+        // get geolocation
+        if (navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(function(position){
+                app.geo = {lon:position.coords.longitude, lat:position.coords.latitude}
 
+            });
+        }
+        else{
+            app.geo = {lon:0, lat:0}
+        }
+        // display the form
         var template = _.template($("#reportForm").html(), this.model.attributes);
         $(this.el).html(template);
         $("#"+this.model.attributes.meta.name).buildForm(this.model.attributes.meta);
-
+        // add the submit button
         $("#"+this.model.attributes.meta.name).append('<input id="submitForm" type="submit" value="Submit">');
 
         return this;
@@ -74,17 +84,24 @@ app.views.FormView = Backbone.View.extend({
 
 
     submit: function(){
-
+        var base = this;
         $.validateForm($("#"+this.model.attributes.meta.name),
             function(){  // success
                 var reportData = new app.models.ReportRecord();
+                var now = new Date();
                 reportData.save({
-                    task_id:this.model.attributes.task_id,
-                    form_id:this.model.attributes.id,
-                    meta:$("#"+this.model.attributes.meta.name).serializeObject()
+
+                    api_key:base.model.attributes.api_key,
+                    form_id:base.model.attributes.id,
+                    meta:$("#"+base.model.attributes.meta.name).serializeObject(),
+                    user: localStorage["email"],
+                    record_date: now,
+                    lon: app.geo.lon,
+                    lat: app.geo.lat
                 }, console.log('saved'));
 
                  console.log('pass');
+                 window.history.back();
              },
             function(cnt){  // failure
                  console.log('fail');

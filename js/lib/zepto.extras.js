@@ -8,8 +8,6 @@
 //   - $.serialize
 //   - $.serializeArray
 //
-// If you require camel casing, you can either download version 1.0.4 or map
-// them yourself.
 //
 
 (function($){

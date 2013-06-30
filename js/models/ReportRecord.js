@@ -25,9 +25,12 @@ app.models.ReportRecord = Backbone.Model.extend({
    urlRoot: app.config.API+'record/',
    defaults:{
       id:null,
-      task_id:0,
+      api_key:0,
       form_id:0,
       meta:null,
-      date_created:''
+      record_date: null,
+      user: '',
+      lon:0,
+      lat:0
    }
 });

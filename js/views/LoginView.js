@@ -17,7 +17,7 @@
  */
 
 /**
- * About: About Model
+ *
  *
  *
  */
@@ -55,7 +55,6 @@ app.views.LoginView = Backbone.View.extend({
             dataType:"json",
             data: formValues,
             success:function (response) {
-
 
                 if(response.status == 'ok') {  // Access Granted
                     // set access key

@@ -27,6 +27,7 @@ var app = {
     utility: {},
     pageView: null,
     data: {forms:null},
+    geo: null,
     init:(function() {
         // use mastasch pattern
         _.templateSettings = {
