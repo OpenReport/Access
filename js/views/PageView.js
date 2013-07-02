@@ -29,6 +29,7 @@ app.views.PageView = Backbone.View.extend({
     render: function () {
         var template = _.template($(this.tpl).html(), {});
         $(this.el).html(template);
+        $(".loader").hide();
         return this;
     },
     destroy: function(){

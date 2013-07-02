@@ -35,6 +35,7 @@ app.controller = Backbone.Router.extend({
 			window.location.replace('#login');
 			return false;
 		}
+		$(".loader").show();
     },
     after: function (route, params) {
 		if(route == ''){
@@ -43,6 +44,7 @@ app.controller = Backbone.Router.extend({
 		else{
 			$('#back-button').prop("disabled", false);
 		}
+
     },
 	routes: {
         "" : "home",

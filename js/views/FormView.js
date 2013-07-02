@@ -28,7 +28,10 @@ app.views.FormListView = Backbone.View.extend({
         var params = { forms: this.collection.models };
         var template = _.template($("#reportFormsView").html(), params);
         $(this.el).html(template);
+
+        $(".loader").hide();
         return this;
+
     },
 
 
@@ -73,7 +76,7 @@ app.views.FormView = Backbone.View.extend({
         $("#"+this.model.attributes.meta.name).buildForm(this.model.attributes.meta);
         // add the submit button
         $("#"+this.model.attributes.meta.name).append('<input id="submitForm" type="submit" value="Submit">');
-
+        $(".loader").hide();
         return this;
     },
 
@@ -84,6 +87,7 @@ app.views.FormView = Backbone.View.extend({
 
 
     submit: function(){
+        $(".loader").show();
         var base = this;
         $.validateForm($("#"+this.model.attributes.meta.name),
             function(){  // success

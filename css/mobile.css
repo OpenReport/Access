@@ -262,6 +262,12 @@ li a {
   -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
   transition: font-size 0.3s ease, background-color 0.3s ease;
 }
+
+
+.loader{
+  display: none;
+}
+
 /*----------------------------------------------  Media Queries ----------------------------------------------  */
 /*
 	@media screen and (max-width: 600px) {
