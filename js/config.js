@@ -18,5 +18,8 @@
  */
 
 app.config.Version = "1.0.3";
+/** SETTINGS **/
 app.config.API = "http://api.openreport.local/";
-app.config.APIKey = ""; /** NEED TO LOGGED IN TO SET KEY **/
+/** NEED TO LOGGED IN TO SET KEY **/
+app.config.APIKey = "";
+app.config.UserId = 0;

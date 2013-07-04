@@ -51,10 +51,10 @@
         <a class="is-active" href="#reportForms">Reporting Forms<span class="pull-right icons">&#59238;</span></a>
         </li>
         <li>
-        <a class="is-active" href="#">Report Assigments<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#assignedForms">Report Assigments<span class="pull-right icons">&#59238;</span></a>
         </li>
         <li>
-        <a class="is-active" href="#">Recent Reports<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#recentReports">Recent Reports<span class="pull-right icons">&#59238;</span></a>
         </li>
         <li>
         <a class="is-active" href="#settings">Settings<span class="pull-right icons">&#59238;</span></a>
@@ -62,9 +62,15 @@
         </ul>
         </div>
     </script>
+
     <script id="aboutView" type="text/template">
         <div class="view">
         <h2>About Open Report</h2>
+        </div>
+    </script>
+    <script id="noView" type="text/template">
+        <div class="view">
+        <h2>Feature Not Enabled</h2>
         </div>
     </script>
     <script id="loginView" type="text/template">
@@ -108,20 +114,6 @@
     </div>
     </script>
 
-    <!-- script id="reportTasksView" type="text/template">
-    <div class="view">
-      <h3 class="view-header">Report Tasks</h3>
-      <ul class="list">
-        {{ _(tasks).each(function(task) { }}
-        <li>
-          <a href="#reportTasks/{{= task.get('id') }}">{{= task.get('title') }}<span class="pull-right icons">&#59238;</span></a>
-
-        </li>
-        {{ }); }}
-      </ul>
-    </div>
-    </script -->
-
     <script id="reportFormsView" type="text/template">
     <div class="view">
       <h3 class="view-header">Report Forms</h3>
@@ -154,7 +146,6 @@
     <script type="text/javascript" src="js/views/LoginView.js"></script>
     <script type="text/javascript" src="js/views/PageView.js"></script>
     <script type="text/javascript" src="js/views/SettingsView.js"></script>
-    <script type="text/javascript" src="js/views/TaskView.js"></script>
     <script type="text/javascript" src="js/views/FormView.js"></script>
     <!-- Routes -->
     <script type="text/javascript" src="js/router.js"></script>

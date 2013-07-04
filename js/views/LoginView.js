@@ -59,6 +59,7 @@ app.views.LoginView = Backbone.View.extend({
                 if(response.status == 'ok') {  // Access Granted
                     // set access key
                     app.config.APIKey = response.data.apiKey;
+                    app.config.UserId = response.data.user_id;
                     localStorage["email"] = formValues.email;
                     localStorage["password"] = formValues.password;
                     window.location.replace('#menu');

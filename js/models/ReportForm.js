@@ -41,22 +41,33 @@ app.collections.ReportForms = Backbone.Collection.extend({
     model:app.models.ReportForm,
     initialize: function(options) {
         options || (options = {});
-        this.key = options.key;
+
     },
     fetchForms: function(options) {
         options || (options = {});
         this.key = options.key;
+        this.user_id = 0;
+        this.fetch();
+    },
+    fetchAssigned: function(options) {
+        options || (options = {});
+        this.key = options.key;
+        this.user_id = options.user_id;
         this.fetch();
     },
     // override fetch url for addtional uri elements
     url:function() {
-        // fetch records forn an event (get:/api/task/{apiKey})
+        // build url
         var uri = this.key;
-        // fetch task records, optional filter by month-year (get:/api/task/{id}{/m-y})
-        //uri = uri + (this.mo > 0 ? '/'+this.mo:'')+(this.yr > 0 ? '-'+this.yr:'');
-        // build new uri
-        console.log(uri);
-        return app.config.API+'form/'+uri;
+
+        if(this.user_id > 0){
+         return app.config.API+'assignments/'+uri+'/'+app.config.UserId;
+        }
+        else{
+         return app.config.API+'form/'+uri;
+        }
+
+
     },
     parse:function(response){
         console.log(response);

@@ -47,12 +47,14 @@ app.controller = Backbone.Router.extend({
 
     },
 	routes: {
-        "" : "home",
+        "" : "login",
         "login" : "login",
         "settings" : "settings",
         "about" : "about",
         "menu" : "menu",
+		"recentReports": "recentReports",
 		"reportForms": "reportForms",
+		"assignedForms": "assignedForms",
 		"form/:formId": "reportForm"
 	},
 	login: function(){
@@ -70,15 +72,20 @@ app.controller = Backbone.Router.extend({
     settings: function() {
 		app.pageView = new app.views.SettingsView();
 	},
-	//reportTasks: function(){
-	//	var tasks = new app.collections.ReportTasks();
-	//	app.pageView = new app.views.TaskView({collection: tasks});
-	//	tasks.fetchTask({'key':app.config.APIKey});
-	//},
+	recentReports: function() {
+		app.pageView = new app.views.PageView({tpl:'#noView'});
+	},
 	reportForms: function(){
 		app.data.forms = new app.collections.ReportForms();
 		app.pageView = new app.views.FormListView({collection: app.data.forms});
 		app.data.forms.fetchForms({'key':app.config.APIKey});
+	},
+	assignedForms: function(){
+
+		console.log(app.config.UserId);
+		app.data.forms = new app.collections.ReportForms();
+		app.pageView = new app.views.FormListView({collection: app.data.forms});
+		app.data.forms.fetchAssigned({'key':app.config.APIKey, 'user_id':app.config.UserId});
 	},
 	reportForm: function(formId){
 
