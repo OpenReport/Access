@@ -1,5 +1,5 @@
 /**
- * Open Report
+ * OpenReport
  *
  * Copyright 2013, The Austin Conner Group
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +32,9 @@ app.controller = Backbone.Router.extend({
 		}
 		// check if authorized
 		if(app.config.APIKey === ''){
-			window.location.replace('#login');
+			if(route !== 'about'){
+				window.location.replace('#login');
+			}
 			return false;
 		}
 		$(".loader").show();
@@ -70,7 +72,8 @@ app.controller = Backbone.Router.extend({
 		app.pageView = new app.views.PageView({tpl:'#aboutView'});
 	},
     settings: function() {
-		app.pageView = new app.views.SettingsView();
+		//app.pageView = new app.views.SettingsView();
+		app.pageView = new app.views.PageView({tpl:'#noView'});
 	},
 	recentReports: function() {
 		app.pageView = new app.views.PageView({tpl:'#noView'});

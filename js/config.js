@@ -1,5 +1,5 @@
 /**
- * Open Report
+ * OpenReport
  *
  * Copyright 2013, The Austin Conner Group
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,9 @@
  *
  */
 
-app.config.Version = "1.0.3";
+app.config.Version = "1.0";
 /** SETTINGS **/
 app.config.API = "http://api.openreport.local/";
-/** NEED TO LOGGED IN TO SET KEY **/
+/** NEED TO BE LOGGED IN TO SET KEY **/
 app.config.APIKey = "";
 app.config.UserId = 0;
