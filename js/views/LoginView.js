@@ -41,7 +41,7 @@ app.views.LoginView = Backbone.View.extend({
 
     login:function (event) {
         event.preventDefault(); // Don't let this button submit the form
-        //$('.alert-error').hide(); // Hide any errors on a new submit
+        $('#loginError').empty(); // Hide any errors on a new submit
         var url = app.config.API+'login';
 
         var formValues = {
@@ -65,7 +65,7 @@ app.views.LoginView = Backbone.View.extend({
                     window.location.replace('#menu');
                 }
                 else { // Access Failed
-                    //window.location.replace('#menu');
+                    $('#loginError').append('Erorr Logging in...');
                 }
             }
         });
