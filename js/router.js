@@ -72,20 +72,20 @@ app.controller = Backbone.Router.extend({
 		app.pageView = new app.views.PageView({tpl:'#aboutView'});
 	},
     settings: function() {
-		//app.pageView = new app.views.SettingsView();
-		app.pageView = new app.views.PageView({tpl:'#noView'});
+		app.pageView = new app.views.SettingsView();
+
 	},
 	recentReports: function() {
 		app.pageView = new app.views.PageView({tpl:'#noView'});
 	},
 	reportForms: function(){
+		if(app.data.forms !== null) app.data.forms.reset();
 		app.data.forms = new app.collections.ReportForms();
 		app.pageView = new app.views.FormListView({collection: app.data.forms});
 		app.data.forms.fetchForms({'key':app.config.APIKey});
 	},
 	assignedForms: function(){
-
-		console.log(app.config.UserId);
+		if(app.data.forms !== null) app.data.forms.reset();
 		app.data.forms = new app.collections.ReportForms();
 		app.pageView = new app.views.FormListView({collection: app.data.forms});
 		app.data.forms.fetchAssigned({'key':app.config.APIKey, 'user_id':app.config.UserId});

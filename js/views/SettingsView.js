@@ -24,7 +24,7 @@ app.views.SettingsView = Backbone.View.extend({
 
 
     render: function () {
-        var template = _.template($("#settingsView").html(), {});
+        var template = _.template($("#settingsView").html(), {settings:app.config});
             $(this.el).html(template);
             $(".loader").hide();
         return this;
