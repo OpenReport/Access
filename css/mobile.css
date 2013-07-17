@@ -138,16 +138,26 @@ fieldset {
 
 }
 
+.ctrl > label{
+  padding-bottom: 6px;
+  padding-top: 14px;
+  font-weight: bolder;
+  font-size: 1.5em;
+}
 
-
-.labelinputs, input, select, textarea {
+input, select, textarea {
 	width:99%;
 }
 
-input[type="text"], input[type="password"], input[type="email"], .labelinputs, textarea, select {
+input,textarea, select{
+  margin-top: 10px;
+}
+
+input[type="text"], input[type="password"], input[type="email"], textarea, select {
 	font:inherit;
 	font-weight: 400;
 	text-indent: 10px;
+    font-size: 1.5em;
 	border:1px solid #ccc;
 	padding:10px 0;
 	background:#fff;
@@ -164,6 +174,54 @@ input[type="radio"], input[type="checkbox"] {
 	width:16px;
 	height:16px;
 }
+span.error{
+    float: left;
+    clear: both;
+}
+
+img.capture-btn,
+img.capture-img{
+     border: solid 1px black;height: 64px; width:64px;
+margin: 2px;
+padding: 1px;
+}
+ul.capture-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  float: none;
+}
+ul.capture-list > li {
+ float: left;
+}
+
+.clearfix {
+  *zoom: 1;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  line-height: 0;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both;
+}
+ul.options {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.options li {
+  margin: 3px;
+  padding: 1px;
+
+ }
+
+
 
 input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, textarea:focus {
 	border:1px solid #999;
@@ -190,12 +248,13 @@ textarea {
 }
 
 label, legend {
-	font-weight:bold;
+
 	display:block;
 }
 
 label {
 	margin-top: 16px;
+    font-size: 1.5em;
 }
 
 legend {
@@ -254,8 +313,6 @@ li a {
   text-decoration: none;
   color: #000;
   display: block;
-
-
   -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
   -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
   -o-transition: font-size 0.3s ease, background-color 0.3s ease;
@@ -263,10 +320,30 @@ li a {
   transition: font-size 0.3s ease, background-color 0.3s ease;
 }
 
+dl {
+  margin-bottom: 20px;
+  font-size: 1.2em;
+}
+dt {
+  float: left;
+  width: 50%;
+  overflow: hidden;
+  clear: left;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
+}
+
+dt dd{margin-bottom: 4px}
 .loader{
   display: none;
+
 }
+
+table{font-size: 1.2em;width: 100%;background-color: #fff;padding: 2px;}
+tr{}
+td{border: solid 1px black;padding: 2px;}
 
 /*----------------------------------------------  Media Queries ----------------------------------------------  */
 /*

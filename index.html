@@ -20,7 +20,6 @@
                     <button id="back-button" class="pull-left"><span class="icons">&#59229;</span></button>
                     <button id="menu-button" class="pull-right"><span class="icons">&#9776;</span></button>
                     <h1>OpenReport</h1>
-
                 </header>
             </div>
             <div class="container">
@@ -32,32 +31,24 @@
         </div>
 
     <!-- Templates -->
-    <script id="homeView" type="text/template">
-        <div class="view">
-        <h2>Home View</h2>
-        <ul class="list">
-        <li>
-        <a class="is-active" href="#login">Login<span class="pull-right icons">&#59238;</span></a>
-        </li>
-        </ul>
-        </div>
-    </script>
-
     <script id="menuView" type="text/template">
         <div class="view">
         <h2>OpenReport Menu</h2>
         <ul class="list">
         <li>
-        <a class="is-active" href="#reportForms">Reporting Forms<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#assignedForms">Report Assigments<span class="pull-right icons">&#59238;</span></a>
         </li>
         <li>
-        <a class="is-active" href="#assignedForms">Report Assigments<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#reportForms">Reporting Forms<span class="pull-right icons">&#59238;</span></a>
         </li>
         <li>
         <a class="is-active" href="#recentReports">Recent Reports<span class="pull-right icons">&#59238;</span></a>
         </li>
         <li>
         <a class="is-active" href="#settings">Settings<span class="pull-right icons">&#59238;</span></a>
+        </li>
+        <li>
+        <a class="is-active" href="#">Log Out<span class="pull-right icons">&#59238;</span></a>
         </li>
         </ul>
         </div>
@@ -66,7 +57,7 @@
     <script id="aboutView" type="text/template">
         <div class="view">
         <h2>About OpenReport</h2>
-        <p>Open Field Report provides real-time field reporting through GPS enabled mobile devices and is used to gather relevant field information for submission to a dedicated web portal</p>
+        <p>OpenReport provides real-time field reporting through GPS enabled mobile devices and is used to gather relevant field information for submission to a dedicated web portal</p>
         <p>Copyright (c) 2013 The Austin Conner Group Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
 http://www.apache.org/licenses/LICENSE-2.0
@@ -96,10 +87,19 @@ Unless required by applicable law or agreed to in writing, software distributed 
               </div>
               <div class="control-group">
                 <div class="controls">
+                  <label class="control-label" for="inputRemember"><input type="checkbox" id="inputRemember">Remember me</label>
+                </div>
+              </div>
+              <div class="control-group">
+              <hr/>
+                <div class="controls">
                   <button type="submit" class="btn" id="loginButton">Sign in</button>
                 </div>
               </div>
             </form>
+            <div class="control-group">
+                <span id="loginError" class="error"></span>
+            </div>
         </div>
     </script>
 
@@ -108,12 +108,26 @@ Unless required by applicable law or agreed to in writing, software distributed 
         <h2>Settings</h2>
         <form id="frm-settings" onsubmit="return false;">
         <fieldset>
-            <div data-rules="required:url" data-type="text" data-name="apiURL">
+            <div>
                 <label for="apiURL">Service endpoint</label>
-                <input type="text" id="apiURL" name="apiURL">
-                <span></span>
+                <input readonly type="text" id="apiURL" value="{{= settings.API }}" name="apiURL">
             </div>
-        <input id="submitForm" type="submit" value="Submit">
+            <div>
+                <label for="apiKey">API Key</label>
+                <input readonly type="text" id="apiKey" value="{{= settings.APIKey }}" name="apiKey">
+            </div>
+            <div>
+                <label for="hasMedia"><input disabled type="checkbox" id="hasMedia" {{= settings.Media ? 'checked' : '' }} name="hasMedia">Media Available
+                </label>
+            </div>
+            <div>
+                <label for="hasGps"><input disabled type="checkbox" id="hasGps" {{= settings.GPS ? 'checked' : '' }} name="hasGps">GPS Available
+                </label>
+            </div>
+            <div>
+                <label for="roles">User Roles</label>
+                <input readonly type="text" id="roles" value="{{= settings.UserRoles }}" name="roles">
+            </div>
         </fieldset>
         </form>
     </div>
@@ -132,12 +146,41 @@ Unless required by applicable law or agreed to in writing, software distributed 
       </ul>
     </div>
     </script>
+    <script id="reportsView" type="text/template">
+    <div class="view">
+      <h3 class="view-header">Recent Reports</h3>
+      <ul class="list">
+        {{ _(reports).each(function(report) { }}
+        <li>
+            <a href="#report/{{= report.id }}">{{= report.title }} - {{= report.identity }}<span class="pull-right icons">&#59238;</span>
+        </li>
+        {{ }); }}
+      </ul>
+    </div>
+    </script>
+    <script id="report" type="text/template">
+    <div class="view">
+      <h3 class="view-header">{{= title }} Report <small>V.{{= record.report_version }}</small></h3>
 
+        <table>
+            {{_(headers[0].fields).each(function(col){ if(col !== 'id') }}
+            <tr><td><strong>{{= col.display }}:</strong></td><td> {{= formatReportData(record.meta[col.name], col.type, col.values ) }}</td></tr>
+            {{ }); }}
+
+            <tr><td><strong>Submited:</strong></td><td> {{= record.record_date.date }}</td></tr>
+            <tr><td><strong>User:</strong></td><td>{{= record.user }}</td></tr>
+            <tr><td><strong>Lon/Lat:</strong></td><td> {{= record.lon }}/{{= record.lat }}</td></tr>
+        </table>
+        <button id="new-report" class="pull-right" data-href="#newreport/{{= record.form_id }}">File a New Report</button>
+    </div>
+    </script>
     <script id="reportForm" type="text/template">
     <div class="view">
-      <h3 class="view-header">Report: {{= title }}</h3>
+      <h3 class="view-header">{{= title }} Report</h3>
       <form id="{{= meta.name }}" onsubmit="return false;">
+
       </form>
+
     </script>
 
     <!-- App -->
@@ -152,12 +195,38 @@ Unless required by applicable law or agreed to in writing, software distributed 
     <script type="text/javascript" src="js/views/PageView.js"></script>
     <script type="text/javascript" src="js/views/SettingsView.js"></script>
     <script type="text/javascript" src="js/views/FormView.js"></script>
+    <script type="text/javascript" src="js/views/ReportView.js"></script>
     <!-- Routes -->
     <script type="text/javascript" src="js/router.js"></script>
 
     <!-- RUN -->
     <script type="text/javascript">
+function formatReportData(value, type, options){
+	if('undefined' == typeof value ) return '--';
+	retValue = value;
+	if(type === 'media:image'){
+		if(value !==''){
+			uri = value.split(',');
+			retValue = ''+uri.length+' photo(s)';
+		}
+		else{
+			retValue = 'no photo(s)'
+		}
+	}
+	if('undefined' != typeof options){
+		retValue = '';
+		if('string' == typeof value) value = [value];
+		_.filter(value,
+			function(obj){
+				if(retValue != '') retValue = retValue + ', ';
+				retValue = retValue + _.findWhere(options, {'value':obj}).label;
+			}
+		);
 
+	}
+
+	return retValue;
+}
         if (!$){$ = Zepto}; //zepto fix
         // startup
         $(app.init);

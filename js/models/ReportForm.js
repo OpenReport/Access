@@ -47,26 +47,23 @@ app.collections.ReportForms = Backbone.Collection.extend({
         options || (options = {});
         this.key = options.key;
         this.user_id = 0;
-        this.fetch();
+        this.fetch(options);
     },
     fetchAssigned: function(options) {
         options || (options = {});
         this.key = options.key;
         this.user_id = options.user_id;
-        this.fetch();
+        this.fetch(options);
     },
     // override fetch url for addtional uri elements
     url:function() {
         // build url
-        var uri = this.key;
-
         if(this.user_id > 0){
-         return app.config.API+'assignments/'+uri+'/'+app.config.UserId;
+         return app.config.API+'assignments/'+this.key+'/'+app.config.UserRoles;
         }
         else{
-         return app.config.API+'form/'+uri;
+         return app.config.API+'form/'+this.key;
         }
-
 
     },
     parse:function(response){

@@ -28,6 +28,8 @@ var app = {
     pageView: null,
     data: {forms:null},
     geo: null,
+    userMedia: null,
+    mediaStream: null,
     init:(function() {
         // use mastasch pattern
         _.templateSettings = {
@@ -54,6 +56,13 @@ var app = {
             app.router.navigate('about', true);
         });
 
+        app.geo = {lon:0, lat:0};
+        // get initial geolocation
+        if (navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(function(position){
+                app.geo = {lon:position.coords.longitude, lat:position.coords.latitude}
+            });
+        }
 
         Backbone.history.start({pushstate:false});
     })

@@ -54,28 +54,43 @@ app.views.FormListView = Backbone.View.extend({
 app.views.FormView = Backbone.View.extend({
     el: '#page-content',
     model: null,
+    identity: '',
     initialize: function(options){
+        options || (options = {});
+        this.identity = options.identity;
         //_.bind(this, 'render');
         //  this.listenTo(this.collection, 'reset', this.render);
     },
 
     render: function () {
         // get geolocation
+
         if (navigator.geolocation){
             navigator.geolocation.getCurrentPosition(function(position){
                 app.geo = {lon:position.coords.longitude, lat:position.coords.latitude}
-
             });
         }
-        else{
-            app.geo = {lon:0, lat:0}
-        }
+
         // display the form
         var template = _.template($("#reportForm").html(), this.model.attributes);
         $(this.el).html(template);
         $("#"+this.model.attributes.meta.name).buildForm(this.model.attributes.meta);
         // add the submit button
-        $("#"+this.model.attributes.meta.name).append('<input id="submitForm" type="submit" value="Submit">');
+        $("#"+this.model.attributes.meta.name).append('<button id="submitForm" type="submit">Submit</button>');
+
+        console.log(this.identity);
+
+        $("input#"+this.model.attributes.identity).val(this.identity);
+
+        // assign OTF Uploading
+        $('img.capture-btn').each(function(){
+            $(this).bind('click', function(e){
+                $('#imageCapture-'+$(this).data('for')).trigger('click');
+            });
+            otfUpload($(this).data('for'));
+        });
+
+
         $(".loader").hide();
         return this;
     },
@@ -91,15 +106,20 @@ app.views.FormView = Backbone.View.extend({
         var base = this;
         $.validateForm($("#"+this.model.attributes.meta.name),
             function(){  // success
+                $('.imageCapture').remove();
                 var reportData = new app.models.ReportRecord();
                 var now = new Date();
-                reportData.save({
+                var tz = ""+now.toString().split("GMT")[1].split(" (")[0];
 
+                reportData.save({
                     api_key:base.model.attributes.api_key,
                     form_id:base.model.attributes.id,
+                    report_version:base.model.attributes.report_version,
+                    identity: $('#'+base.model.attributes.identity).val(),
                     meta:$("#"+base.model.attributes.meta.name).serializeObject(),
                     user: localStorage["email"],
                     record_date: now,
+                    record_time_offset: tz,
                     lon: app.geo.lon,
                     lat: app.geo.lat
                 }, console.log('saved'));
@@ -109,6 +129,7 @@ app.views.FormView = Backbone.View.extend({
              },
             function(cnt){  // failure
                  console.log('fail');
+                 $(".loader").hide();
              }
         );
 
@@ -123,3 +144,66 @@ app.views.FormView = Backbone.View.extend({
     }
 
 });
+
+
+function attachPhoto(id, src){
+
+    ul = $('ul#capture-img-'+id);
+    console.log(ul);
+    var li = document.createElement('li');
+    var img = document.createElement('img');
+    img.setAttribute('src', src);
+    img.setAttribute('class', 'capture-img');
+
+    $(li).append(img);
+    $(ul).prepend(li);
+    //$('img#'+id+'-img').attr('src', src);
+}
+
+function otfUpload(id){
+    var fInput = document.getElementById('imageCapture-'+id);
+    //fInput.style.display = "none";
+    // Create a FormData Object
+    var formData = false;
+    fInput.addEventListener('change', function(e){
+        formData = new FormData;
+        var i=0, l = this.files.length,img,reader,file;
+
+        for(;i<l;i++){
+            file = this.files[i];
+            if(file.size > 2100000 || file.type !== "image/jpeg") continue;
+            reader = new FileReader();
+            reader.onloadend = function(e){
+
+                attachPhoto(id, e.target.result);
+            };
+            //
+            reader.readAsDataURL(file);
+            formData.append('images[]', file);
+            formData.append('form_id',99);
+            formData.append('column',id);
+            $.ajax({
+                contentType: false,
+                processData: false,
+                url: app.config.API+'media/upload/'+app.config.APIKey,
+                type: 'post',
+                dataType:'json',
+                data: formData,
+                success: function(response){
+                    console.log(response);
+                    if(response.status === 'ok' && response.count > 0){
+                        value = $('#'+id).val();
+                        value = value+(value === ''? '':',')+response.data[0];
+                        $('#'+id).val(value);
+                    }
+
+                },
+                failure: function(err){
+                    console.log(err);
+                    $('#errors').append(err);
+                }
+            });
+
+        }
+    });
+}

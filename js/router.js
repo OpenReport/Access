@@ -57,7 +57,9 @@ app.controller = Backbone.Router.extend({
 		"recentReports": "recentReports",
 		"reportForms": "reportForms",
 		"assignedForms": "assignedForms",
-		"form/:formId": "reportForm"
+		"form/:formId": "reportForm",
+		"report/:reportId":"recordView",
+		"newreport/:formId":"newReport"
 	},
 	login: function(){
 		app.pageView = new app.views.LoginView();
@@ -76,7 +78,14 @@ app.controller = Backbone.Router.extend({
 
 	},
 	recentReports: function() {
-		app.pageView = new app.views.PageView({tpl:'#noView'});
+		$.ajax({
+			url:app.config.API+'reports/'+app.config.APIKey+'/'+localStorage["email"],
+			dataType: "json",
+			success: function(response){
+				app.pageView = new app.views.ReportsView({reports:response.data});
+			}
+		});
+
 	},
 	reportForms: function(){
 		if(app.data.forms !== null) app.data.forms.reset();
@@ -93,5 +102,23 @@ app.controller = Backbone.Router.extend({
 	reportForm: function(formId){
 
 		app.pageView = new app.views.FormView({'model':app.data.forms.get(formId)}).render();
+	},
+	recordView:function(reportId){
+		$.ajax({
+			url:app.config.API+'record/'+app.config.APIKey+'/'+reportId,
+			dataType: "json",
+			success: function(response){
+				app.pageView = new app.views.RecordView({model: response.data});
+			}
+		});
+	},
+	newReport:function(formId){
+		app.data.forms = new app.collections.ReportForms();
+		app.data.forms.fetchAssigned({'key':app.config.APIKey, 'user_id':app.config.UserId,
+			'success':function(){
+				app.pageView = new app.views.FormView({'model':app.data.forms.get(formId), 'identity':'NOTRH-A1'}).render();
+			}
+		});
 	}
+
 });
