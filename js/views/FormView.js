@@ -34,22 +34,12 @@ app.views.FormListView = Backbone.View.extend({
 
     },
 
-
-    //events: {
-    //    "click #back-button": "back"
-    //},
-    //
-    //back: function() {
-    //    window.history.back();
-    //    return false;
-    //},
     destroy: function(){
         $(this.el).unbind();
         $(this.el).empty();
     }
 
 });
-
 
 app.views.FormView = Backbone.View.extend({
     el: '#page-content',
@@ -78,8 +68,6 @@ app.views.FormView = Backbone.View.extend({
         // add the submit button
         $("#"+this.model.attributes.meta.name).append('<button id="submitForm" type="submit">Submit</button>');
 
-        console.log(this.identity);
-
         $("input#"+this.model.attributes.identity).val(this.identity);
 
         // assign OTF Uploading
@@ -95,14 +83,13 @@ app.views.FormView = Backbone.View.extend({
         return this;
     },
 
-
     events: {
         "click #submitForm": "submit"
     },
 
-
     submit: function(){
         $(".loader").show();
+        $('#messages').hide();
         var base = this;
         $.validateForm($("#"+this.model.attributes.meta.name),
             function(){  // success
@@ -110,7 +97,6 @@ app.views.FormView = Backbone.View.extend({
                 var reportData = new app.models.ReportRecord();
                 var now = new Date();
                 var tz = ""+now.toString().split("GMT")[1].split(" (")[0];
-
                 reportData.save({
                     api_key:base.model.attributes.api_key,
                     form_id:base.model.attributes.id,
@@ -124,11 +110,11 @@ app.views.FormView = Backbone.View.extend({
                     lat: app.geo.lat
                 }, console.log('saved'));
 
-                 console.log('pass');
-                 window.history.back();
+                 window.location.replace('#menu');
              },
             function(cnt){  // failure
                  console.log('fail');
+                 $('#messages').append('Error: Some Report Fields are Missing or Incorrect.').show();
                  $(".loader").hide();
              }
         );

@@ -25,9 +25,8 @@ app.views.PageView = Backbone.View.extend({
         this.render();
     },
 
-
     render: function () {
-        var template = _.template($(this.tpl).html(), {});
+        var template = _.template($(this.tpl).html(), {account_name:app.config.AccountName});
         $(this.el).html(template);
         $(".loader").hide();
         return this;

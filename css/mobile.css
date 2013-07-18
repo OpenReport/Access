@@ -113,9 +113,12 @@ summary {
 
 .header button{margin-top: -6px;}
 
+.alerts{padding-top: 20px; width:95%; margin:0 auto;font-size: 1.4em;color:red;}
+
+
 /* CSS for the content of page. I am giving top and bottom padding of 80px to
 /* make sure the header and footer do not overlap the content.*/
-.container { margin:0 auto; overflow:auto; padding:80px 0; width:100%; }
+.container { margin:0 auto; overflow:auto; padding:40px 0; width:100%; }
 .content {color: #000;}
 
 .view {
@@ -177,6 +180,8 @@ input[type="radio"], input[type="checkbox"] {
 span.error{
     float: left;
     clear: both;
+    font-size: 1.2em;
+    color: red;
 }
 
 img.capture-btn,

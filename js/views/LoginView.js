@@ -41,7 +41,7 @@ app.views.LoginView = Backbone.View.extend({
 
     login:function (event) {
         event.preventDefault(); // Don't let this button submit the form
-        $('#loginError').empty(); // Hide any errors on a new submit
+        $('#errors').empty(); // Hide any errors on a new submit
         var url = app.config.API+'login';
 
         var formValues = {
@@ -61,12 +61,13 @@ app.views.LoginView = Backbone.View.extend({
                     app.config.APIKey = response.data.apiKey;
                     app.config.UserId = response.data.user_id;
                     app.config.UserRoles = response.data.roles;
+                    app.config.AccountName = response.data.acctName;
                     localStorage["email"] = formValues.email;
                     localStorage["password"] = formValues.password;
                     window.location.replace('#menu');
                 }
                 else { // Access Failed
-                    $('#loginError').append('Erorr Logging in...');
+                    $('#errors').append('Error: Email and/or Password are Incorrect.').show();
                 }
             }
         });

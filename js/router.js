@@ -40,7 +40,7 @@ app.controller = Backbone.Router.extend({
 		$(".loader").show();
     },
     after: function (route, params) {
-		if(route == ''){
+		if(route === '' || route === 'menu'){
 			$('#back-button').prop("disabled", true);
 		}
 		else{
@@ -59,7 +59,7 @@ app.controller = Backbone.Router.extend({
 		"assignedForms": "assignedForms",
 		"form/:formId": "reportForm",
 		"report/:reportId":"recordView",
-		"newreport/:formId":"newReport"
+		"newreport/:formId/:identity":"newReport"
 	},
 	login: function(){
 		app.pageView = new app.views.LoginView();
@@ -75,7 +75,6 @@ app.controller = Backbone.Router.extend({
 	},
     settings: function() {
 		app.pageView = new app.views.SettingsView();
-
 	},
 	recentReports: function() {
 		$.ajax({
@@ -85,17 +84,19 @@ app.controller = Backbone.Router.extend({
 				app.pageView = new app.views.ReportsView({reports:response.data});
 			}
 		});
-
 	},
 	reportForms: function(){
+
 		if(app.data.forms !== null) app.data.forms.reset();
 		app.data.forms = new app.collections.ReportForms();
+
 		app.pageView = new app.views.FormListView({collection: app.data.forms});
 		app.data.forms.fetchForms({'key':app.config.APIKey});
 	},
 	assignedForms: function(){
 		if(app.data.forms !== null) app.data.forms.reset();
 		app.data.forms = new app.collections.ReportForms();
+
 		app.pageView = new app.views.FormListView({collection: app.data.forms});
 		app.data.forms.fetchAssigned({'key':app.config.APIKey, 'user_id':app.config.UserId});
 	},
@@ -112,11 +113,13 @@ app.controller = Backbone.Router.extend({
 			}
 		});
 	},
-	newReport:function(formId){
-		app.data.forms = new app.collections.ReportForms();
-		app.data.forms.fetchAssigned({'key':app.config.APIKey, 'user_id':app.config.UserId,
-			'success':function(){
-				app.pageView = new app.views.FormView({'model':app.data.forms.get(formId), 'identity':'NOTRH-A1'}).render();
+	newReport:function(formId, identity){
+
+		app.data.form = new app.models.ReportForm({'api_key':app.config.APIKey, 'id':formId});
+		app.data.form.fetch({
+			'success':function(data){
+
+				app.pageView = new app.views.FormView({'model':app.data.form, 'identity':identity}).render();
 			}
 		});
 	}

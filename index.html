@@ -23,7 +23,9 @@
                 </header>
             </div>
             <div class="container">
+                <div id="errors" class="alerts" style="display: none"></div>
                 <section id="page-content" class="content"></section>
+                <div id="messages" class="alerts" style="display: none"></div>
             </div>
             <div class="footer_container">
                 <footer class="footer"><span class="pull-left"><img class="loader" src="css/img/loader.gif" /></span><span id="version"></span> (c)2013 Austin Conner Group<button href="#" id="info-button" class="pull-right"><span class="icons">&#59141;</span></button></footer>
@@ -33,13 +35,13 @@
     <!-- Templates -->
     <script id="menuView" type="text/template">
         <div class="view">
-        <h2>OpenReport Menu</h2>
+        <h2><small>{{= account_name }}</small></h2>
         <ul class="list">
         <li>
-        <a class="is-active" href="#assignedForms">Report Assigments<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#reportForms">Reporting Forms<span class="pull-right icons">&#59238;</span></a>
         </li>
         <li>
-        <a class="is-active" href="#reportForms">Reporting Forms<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#assignedForms">Assigned Report<span class="pull-right icons">&#59238;</span></a>
         </li>
         <li>
         <a class="is-active" href="#recentReports">Recent Reports<span class="pull-right icons">&#59238;</span></a>
@@ -71,7 +73,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
     </script>
     <script id="loginView" type="text/template">
         <div class="view">
-            <h3 class="view-header">Login</h3>
+            <h2 class="view-header">Login</h2>
             <form class="form-horizontal">
               <div class="control-group">
                 <label class="control-label" for="inputEmail">Email</label>
@@ -161,7 +163,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
     <script id="report" type="text/template">
     <div class="view">
       <h3 class="view-header">{{= title }} Report <small>V.{{= record.report_version }}</small></h3>
-
         <table>
             {{_(headers[0].fields).each(function(col){ if(col !== 'id') }}
             <tr><td><strong>{{= col.display }}:</strong></td><td> {{= formatReportData(record.meta[col.name], col.type, col.values ) }}</td></tr>
@@ -171,7 +172,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
             <tr><td><strong>User:</strong></td><td>{{= record.user }}</td></tr>
             <tr><td><strong>Lon/Lat:</strong></td><td> {{= record.lon }}/{{= record.lat }}</td></tr>
         </table>
-        <button id="new-report" class="pull-right" data-href="#newreport/{{= record.form_id }}">File a New Report</button>
+        <button id="new-report" class="pull-right" data-href="#newreport/{{= record.form_id }}/{{= record.identity }}">File a New Report</button>
     </div>
     </script>
     <script id="reportForm" type="text/template">
@@ -201,32 +202,32 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
     <!-- RUN -->
     <script type="text/javascript">
-function formatReportData(value, type, options){
-	if('undefined' == typeof value ) return '--';
-	retValue = value;
-	if(type === 'media:image'){
-		if(value !==''){
-			uri = value.split(',');
-			retValue = ''+uri.length+' photo(s)';
-		}
-		else{
-			retValue = 'no photo(s)'
-		}
-	}
-	if('undefined' != typeof options){
-		retValue = '';
-		if('string' == typeof value) value = [value];
-		_.filter(value,
-			function(obj){
-				if(retValue != '') retValue = retValue + ', ';
-				retValue = retValue + _.findWhere(options, {'value':obj}).label;
-			}
-		);
+        function formatReportData(value, type, options){
+            if('undefined' == typeof value ) return '--';
+            retValue = value;
+            if(type === 'media:image'){
+                if(value !==''){
+                    uri = value.split(',');
+                    retValue = ''+uri.length+' photo(s)';
+                }
+                else{
+                    retValue = 'no photo(s)'
+                }
+            }
+            if('undefined' != typeof options){
+                retValue = '';
+                if('string' == typeof value) value = [value];
+                _.filter(value,
+                    function(obj){
+                        if(retValue != '') retValue = retValue + ', ';
+                        retValue = retValue + _.findWhere(options, {'value':obj}).label;
+                    }
+                );
 
-	}
+            }
 
-	return retValue;
-}
+            return retValue;
+        }
         if (!$){$ = Zepto}; //zepto fix
         // startup
         $(app.init);

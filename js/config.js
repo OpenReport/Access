@@ -23,7 +23,8 @@ app.config.API = "http://api.openreport.local/";
 app.config.Media = !!app.userMedia;
 app.config.GPS = 'geolocation' in navigator;
 
-/** NEED TO BE LOGGED IN TO SET KEY **/
+/** NEED TO BE LOGGED IN TO SET THE FOLLOWING **/
 app.config.APIKey = "";
+app.config.AccountName = "";
 app.config.UserId = 0;
 app.config.UserRoles = "";

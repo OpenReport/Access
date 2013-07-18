@@ -22,6 +22,7 @@
  *
  */
 app.models.ReportForm = Backbone.Model.extend({
+   api_key:'',
    urlRoot: app.config.API+'form',
    defaults:{
       id:null,
@@ -29,6 +30,17 @@ app.models.ReportForm = Backbone.Model.extend({
       description:'',
       date_created:'',
       api_key:null
+   },
+   initialize: function(options) {
+      options || (options = {});
+      this.api_key = options.api_key;
+      if(this.api_key !== '') this.urlRoot = app.config.API+'form/'+this.api_key+'/';
+   },
+   //url:function(){
+   //   return this.urlRoot+this.api_key+'/'+this.id;
+   //},
+   parse:function(response){
+       return response.data;
    }
 });
 
@@ -38,7 +50,7 @@ app.models.ReportForm = Backbone.Model.extend({
  *
  */
 app.collections.ReportForms = Backbone.Collection.extend({
-    model:app.models.ReportForm,
+   // model:app.models.ReportForm,
     initialize: function(options) {
         options || (options = {});
 
@@ -59,15 +71,15 @@ app.collections.ReportForms = Backbone.Collection.extend({
     url:function() {
         // build url
         if(this.user_id > 0){
-         return app.config.API+'assignments/'+this.key+'/'+app.config.UserRoles;
+         return app.config.API+'assignments/'+this.key+'/'+this.user_id;
         }
         else{
-         return app.config.API+'form/'+this.key;
+         return app.config.API+'forms/'+this.key+'/'+app.config.UserRoles;
         }
 
     },
     parse:function(response){
-        console.log(response);
+
         return response.data;
     }
 });
