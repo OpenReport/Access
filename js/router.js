@@ -77,27 +77,25 @@ app.controller = Backbone.Router.extend({
 		app.pageView = new app.views.SettingsView();
 	},
 	recentReports: function() {
-		$.ajax({
-			url:app.config.API+'reports/'+app.config.APIKey+'/'+localStorage["email"],
-			dataType: "json",
-			success: function(response){
-				app.pageView = new app.views.ReportsView({reports:response.data});
-			}
-		});
+		//if(app.data.reports !== null) app.data.reports.reset();
+		app.data.reports = new app.collections.ReportRecords({ user_email:localStorage["email"]});
+
+		app.pageView = new app.views.ReportsView({collection: app.data.reports});
+
 	},
 	reportForms: function(){
 
 		if(app.data.forms !== null) app.data.forms.reset();
 		app.data.forms = new app.collections.ReportForms();
 
-		app.pageView = new app.views.FormListView({collection: app.data.forms});
+		app.pageView = new app.views.FormListView({view:'#reportFormsView', collection: app.data.forms});
 		app.data.forms.fetchForms({'key':app.config.APIKey});
 	},
 	assignedForms: function(){
 		if(app.data.forms !== null) app.data.forms.reset();
 		app.data.forms = new app.collections.ReportForms();
 
-		app.pageView = new app.views.FormListView({collection: app.data.forms});
+		app.pageView = new app.views.FormListView({view:'#reportAssignmentsView', collection: app.data.forms});
 		app.data.forms.fetchAssigned({'key':app.config.APIKey, 'user_id':app.config.UserId});
 	},
 	reportForm: function(formId){

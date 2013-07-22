@@ -9,8 +9,10 @@
         <script type="text/javascript" src="js/lib/underscore-min.js"></script>
         <script type="text/javascript" src="js/lib/backbone-min.js"></script>
         <script type="text/javascript" src="js/lib/backbone.routerFilters.js"></script>
+        <script type="text/javascript" src="js/lib/moment.min.js"></script>
         <!-- OpenReport Specific -->
         <script type="text/javascript" src="js/lib/openreport.builder.js"></script>
+        <script type="text/javascript" src="js/lib/OpenLayers.mobile.js"></script>
     </head>
 
     <body>
@@ -38,19 +40,19 @@
         <h2><small>{{= account_name }}</small></h2>
         <ul class="list">
         <li>
-        <a class="is-active" href="#reportForms">Reporting Forms<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#assignedForms">Assigned Report<span class="pull-right icons single-line">&#59238;</span></a>
         </li>
         <li>
-        <a class="is-active" href="#assignedForms">Assigned Report<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#reportForms">Reporting Forms<span class="pull-right icons single-line">&#59238;</span></a>
         </li>
         <li>
-        <a class="is-active" href="#recentReports">Recent Reports<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#recentReports">Recent Reports<span class="pull-right icons single-line">&#59238;</span></a>
         </li>
         <li>
-        <a class="is-active" href="#settings">Settings<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#settings">Settings<span class="pull-right icons single-line">&#59238;</span></a>
         </li>
         <li>
-        <a class="is-active" href="#">Log Out<span class="pull-right icons">&#59238;</span></a>
+        <a class="is-active" href="#">Log Out<span class="pull-right icons single-line">&#59238;</span></a>
         </li>
         </ul>
         </div>
@@ -62,8 +64,8 @@
         <p>OpenReport provides real-time field reporting through GPS enabled mobile devices and is used to gather relevant field information for submission to a dedicated web portal</p>
         <p>Copyright (c) 2013 The Austin Conner Group Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</p>
+        http://www.apache.org/licenses/LICENSE-2.0
+        Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</p>
         </div>
     </script>
     <script id="noView" type="text/template">
@@ -141,24 +143,47 @@ Unless required by applicable law or agreed to in writing, software distributed 
       <ul class="list">
         {{ _(forms).each(function(form) { }}
         <li>
-          <a href="#form/{{= form.get('id') }}">{{= form.get('title') }}<span class="pull-right icons">&#59238;</span>
+          <a href="#form/{{= form.get('id') }}">{{= form.get('title') }}<span class="pull-right icons single-line">&#59238;</span></a>
 
         </li>
         {{ }); }}
       </ul>
     </div>
     </script>
-    <script id="reportsView" type="text/template">
+
+    <script id="reportAssignmentsView" type="text/template">
     <div class="view">
-      <h3 class="view-header">Recent Reports</h3>
+      <h3 class="view-header">Assigened Reports</h3>
       <ul class="list">
-        {{ _(reports).each(function(report) { }}
+        {{ _(forms).each(function(form) { }}
         <li>
-            <a href="#report/{{= report.id }}">{{= report.title }} - {{= report.identity }}<span class="pull-right icons">&#59238;</span>
+          <a href="#form/{{= form.get('id') }}">{{= form.get('title') }}<span class="pull-right icons">&#59238;</span><br/>
+           <small>Due: {{= app.nextDueDate(form.get('date_assigned'),form.get('date_last_report'),form.get('schedule'),form.get('repeat_schedule')) }}</small>
+          </a>
         </li>
         {{ }); }}
       </ul>
     </div>
+    </script>
+    <script id="reportsView" type="text/template">
+    <div class="view clearfix">
+      <h3 class="view-header">Recent Reports</h3>
+
+      <ul class="list">
+
+        {{ _(reports).each(function(report) { }}
+        <li>
+            <a href="#report/{{= report.attributes.id }}">{{= report.attributes.title }}<span class="pull-right icons">&#59238;</span><br/>
+            <small>{{= report.attributes.identity }}</small>
+            </a>
+        </li>
+        {{ }); }}
+      </ul>
+        </div>
+          <div class="view clearfix">
+          <button id="prevPage" class="pull-left"><span class="icon">&#9666;</span> Prev</button>
+          <button id="nextPage" class="pull-right">Next <span class="icon">&#9656;</span></button>
+      </div>
     </script>
     <script id="report" type="text/template">
     <div class="view">
@@ -171,9 +196,46 @@ Unless required by applicable law or agreed to in writing, software distributed 
             <tr><td><strong>Submited:</strong></td><td> {{= record.record_date.date }}</td></tr>
             <tr><td><strong>User:</strong></td><td>{{= record.user }}</td></tr>
             <tr><td><strong>Lon/Lat:</strong></td><td> {{= record.lon }}/{{= record.lat }}</td></tr>
+            <tr><td colspan="2" style="text-align:center;"><strong>Map</strong></div></td></tr>
+            <tr><td colspan="2"><div id="map" class="small-map" data-lon="{{= record.lon }}" data-lat="{{= record.lat }}"></div></td></tr>
+            <tr><td colspan="2" style="text-align:center;"><strong>Media</strong></div></td></tr>
+            <tr><td colspan="2">
+                {{_(headers[0].fields).each(function(col){ if(col.type === 'media:image') }}
+                    {{= app.formatMedia(record.meta[col.name]) }}
+                {{ }); }}
+            </td>
+            </tr>
         </table>
+        <div class="view">
+
+        </div>
         <button id="new-report" class="pull-right" data-href="#newreport/{{= record.form_id }}/{{= record.identity }}">File a New Report</button>
     </div>
+
+
+    <script type="text/javascript">
+//$(function(){
+    console.log($('#map').data('lat'));
+    var lon = $('#map').data('lon');
+    var lat = $('#map').data('lat');
+
+// });
+        var map, layer;
+        //function init(){
+            map = new OpenLayers.Map( 'map' );
+            layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
+            map.addLayer(layer);
+            map.setCenter(
+                new OpenLayers.LonLat(lon, lat).transform(
+                    new OpenLayers.Projection("EPSG:4326"),
+                    map.getProjectionObject()
+                ), 12
+            );
+        //}
+
+
+    </script>
+
     </script>
     <script id="reportForm" type="text/template">
     <div class="view">
@@ -187,8 +249,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
     <!-- App -->
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/utility.js"></script>
     <!-- Models -->
-    <script type="text/javascript" src="js/models/ReportTask.js"></script>
     <script type="text/javascript" src="js/models/ReportForm.js"></script>
     <script type="text/javascript" src="js/models/ReportRecord.js"></script>
     <!-- Views -->

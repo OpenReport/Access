@@ -16,12 +16,14 @@
     font-family: 'EntypoRegular';
     font-size: 2em;
     font-weight: normal;
+}
+.single-line
+{
     line-height: 0.6em;
     position: relative;
     top: 0;
     vertical-align: middle;
 }
-
 
 button {
     background: none repeat scroll 0 0 #fff;
@@ -90,7 +92,7 @@ summary {
 }
 .header-fixed {
   background:#000; border:1px solid #ccc; height:60px; left:0; position:fixed;
-  width:100%; top:0; z-index: 999; }
+  width:100%; top:0; z-index: 9999; }
 
 
 .header {  margin:0 auto; width:100%; text-align:center; color:#fff}
@@ -122,14 +124,15 @@ summary {
 .content {color: #000;}
 
 .view {
-  margin:0 auto; padding: 0; width:95%
+  margin:0 auto; padding: 0; width:95%;
 }
 
 
 /* Make Footer Sticky */
 
 .footer_container { background:#fff; border:1px solid #bbb; bottom:0;
-height:40px; left:0; position:fixed; width:100%; } .footer { line-height:60px;
+height:40px; left:0; position:fixed; width:100%;  z-index: 9999;}
+.footer { line-height:60px;
 margin:0 auto; width:100%; text-align:center; }
 
 
@@ -307,8 +310,9 @@ ul.list {
 ul.list li {
   font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
   border: 1px solid #ccc;
+  border-radius: 4px 4px 4px 4px;
   margin: 4px;
-  padding: 4px;
+  padding: 4px 8px;
   background-color: #fff;
  }
 
@@ -349,6 +353,20 @@ dt dd{margin-bottom: 4px}
 table{font-size: 1.2em;width: 100%;background-color: #fff;padding: 2px;}
 tr{}
 td{border: solid 1px black;padding: 2px;}
+
+
+/**
+ * Map Examples Specific
+ */
+.small-map {
+
+    height: 400px;
+
+}
+
+.thumb{
+  width: 100%;
+}
 
 /*----------------------------------------------  Media Queries ----------------------------------------------  */
 /*

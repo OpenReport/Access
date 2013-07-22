@@ -26,7 +26,7 @@ var app = {
     router: {},
     utility: {},
     pageView: null,
-    data: {forms:null},
+    data: {forms:null, reports:null},
     geo: null,
     userMedia: null,
     mediaStream: null,
@@ -65,5 +65,60 @@ var app = {
         }
 
         Backbone.history.start({pushstate:false});
-    })
+    }),
+    formatDate:(function(date){
+        return moment(date).format('LL');
+    }),
+    /**
+     * Calculate next due date
+     *
+     * param: as=date (assign date)
+     * param: ld=date (last occurance)
+     * param: s=schedule (daily, weekly, monthly)
+     * param: i=ignore weekends (daily logic)
+     *
+     */
+    nextDueDate:(function(as, ld, s, i){
+
+        if(ld == null){ // return assigned date if no reports are files
+            return moment(as).format('LL');
+        }
+        var due;
+        switch(s){
+            case 'daily':
+                due = moment(ld).add('days', 1);
+            break;
+            case 'weekly':
+                due = moment(ld).add('weeks', 1);
+            break;
+            case 'monthly':
+                due = moment(ld).add('months', 1);
+            break;
+        }
+        console.log(due);
+
+        return due.format('LL');
+
+    }),
+
+    /**
+     * format 'media:image'
+     *
+     *
+     */
+    formatMedia: function (src){
+
+	media = '';
+	images = src.split(',');
+
+	for(i=0;i<images.length;i++){
+		if(images[i] === '') continue;
+		media = media + '<img class="thumb" src="http://api.openreport.local/media/data/'+images[i]+'" >';
+	}
+
+	return media === '' ? 'no photos':media;
+}
+
+
+
 };

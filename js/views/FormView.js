@@ -20,13 +20,16 @@ app.views.FormListView = Backbone.View.extend({
     el: '#page-content',
     collection: null,
     initialize: function(options){
+         options || (options = {});
+         this.template = options.view;
         _.bind(this, 'render');
         this.listenTo(this.collection, 'reset', this.render);
     },
 
     render: function () {
+        console.log(this.template);
         var params = { forms: this.collection.models };
-        var template = _.template($("#reportFormsView").html(), params);
+        var template = _.template($(this.template).html(), params);
         $(this.el).html(template);
 
         $(".loader").hide();
@@ -101,7 +104,7 @@ app.views.FormView = Backbone.View.extend({
                     api_key:base.model.attributes.api_key,
                     form_id:base.model.attributes.id,
                     report_version:base.model.attributes.report_version,
-                    identity: $('#'+base.model.attributes.identity).val(),
+                    identity: $('#'+base.model.attributes.identity_name).val(),
                     meta:$("#"+base.model.attributes.meta.name).serializeObject(),
                     user: localStorage["email"],
                     record_date: now,
@@ -120,10 +123,7 @@ app.views.FormView = Backbone.View.extend({
         );
 
     },
-    //back: function() {
-    //    window.history.back();
-    //    return false;
-    //},
+
     destroy: function(){
         $(this.el).unbind();
         $(this.el).empty();

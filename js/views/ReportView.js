@@ -23,24 +23,40 @@
  */
 app.views.ReportsView = Backbone.View.extend({
     el: '#page-content',
+    pageIndex: 0,
+    recordCount: 0,
+    collection: null,
     initialize: function(options){
-        this.render(options.reports);
+      _.bind(this, 'render');
+      this.listenTo(this.collection, 'reset', this.render);
+      this.collection.fetchRecords({pageOffset:this.pageIndex});
     },
 
-    render: function (reports) {
-
-        var template = _.template($("#reportsView").html(), {reports:reports});
+    render: function() {
+	var params = { reports:this.collection.models, count:this.collection.recCount };
+        var template = _.template($("#reportsView").html(), params);
         $(this.el).html(template);
         $(".loader").hide();
-
         return this;
     },
 
-
     events: {
-        "click #back-button": "back"
+        "click #back-button": "back",
+        "click #nextPage": "nextPage",
+        "click #prevPage": "prevPage"
     },
+    prevPage: function(index){
+      if((this.pageIndex) < app.config.PagingSize ) return;
+      this.pageIndex = this.pageIndex - app.config.PagingSize;
+      this.collection.fetchRecords({pageOffset:this.pageIndex});
 
+    },
+    nextPage:function(index){
+      if((this.pageIndex + app.config.PagingSize) > this.collection.recCount) return;
+      this.pageIndex = this.pageIndex + app.config.PagingSize;
+      this.collection.fetchRecords({pageOffset:this.pageIndex});
+
+    },
     back: function() {
         window.history.back();
         return false;

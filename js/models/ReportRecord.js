@@ -17,7 +17,7 @@
  */
 
 /**
- * ReportRecord: Reporting Form Records
+ * ReportRecord: Reporting Form Record
  *
  *
  */
@@ -33,4 +33,38 @@ app.models.ReportRecord = Backbone.Model.extend({
       lon:0,
       lat:0
    }
+});
+
+
+
+app.collections.ReportRecords = Backbone.Collection.extend({
+    model:app.models.ReportRecord,
+    id:0,   // record id
+    user_email:'',
+    recCount:0,
+    initialize: function(options) {
+        options || (options = {});
+        this.key = options.key;
+        this.user_email = options.user_email;
+    },
+    fetchRecords: function(options) {
+        options || (options = {});
+        this.pageOffset = options.pageOffset;
+        this.fetch(options);
+    },
+    // override fetch url for addtional uri elements
+    url:function() {
+
+        var limit = app.config.PagingSize;
+        // check for paging
+        if('undefined' != typeof this.pageOffset){
+            limit = limit+','+this.pageOffset;
+        }
+
+        return app.config.API+'reports/'+app.config.APIKey+'/'+this.user_email+'?l='+limit;
+    },
+    parse:function(response){
+        this.recCount = response.count;
+        return response.data;
+    }
 });
