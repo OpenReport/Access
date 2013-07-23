@@ -27,7 +27,6 @@ app.views.FormListView = Backbone.View.extend({
     },
 
     render: function () {
-        console.log(this.template);
         var params = { forms: this.collection.models };
         var template = _.template($(this.template).html(), params);
         $(this.el).html(template);
@@ -51,8 +50,7 @@ app.views.FormView = Backbone.View.extend({
     initialize: function(options){
         options || (options = {});
         this.identity = options.identity;
-        //_.bind(this, 'render');
-        //  this.listenTo(this.collection, 'reset', this.render);
+        this.listenTo(this.model, 'change', this.render);
     },
 
     render: function () {
@@ -70,8 +68,9 @@ app.views.FormView = Backbone.View.extend({
         $("#"+this.model.attributes.meta.name).buildForm(this.model.attributes.meta);
         // add the submit button
         $("#"+this.model.attributes.meta.name).append('<button id="submitForm" type="submit">Submit</button>');
+        // set idenity if any
+        $("input#"+this.model.attributes.identity_name).val(typeof this.identity !== 'undefined'? this.identity:'');
 
-        $("input#"+this.model.attributes.identity).val(this.identity);
 
         // assign OTF Uploading
         $('img.capture-btn').each(function(){
@@ -97,11 +96,11 @@ app.views.FormView = Backbone.View.extend({
         $.validateForm($("#"+this.model.attributes.meta.name),
             function(){  // success
                 $('.imageCapture').remove();
-                var reportData = new app.models.ReportRecord();
+                var reportData = new app.models.ReportRecord();console.log(reportData);
                 var now = new Date();
                 var tz = ""+now.toString().split("GMT")[1].split(" (")[0];
                 reportData.save({
-                    api_key:base.model.attributes.api_key,
+                    api_key:app.config.APIKey,
                     form_id:base.model.attributes.id,
                     report_version:base.model.attributes.report_version,
                     identity: $('#'+base.model.attributes.identity_name).val(),

@@ -34,7 +34,7 @@ app.models.ReportForm = Backbone.Model.extend({
    initialize: function(options) {
       options || (options = {});
       this.api_key = options.api_key;
-      if(this.api_key !== '') this.urlRoot = app.config.API+'form/'+this.api_key+'/';
+      if(options.form_id !== '') this.urlRoot = app.config.API+'form/'+this.api_key+'/'+options.form_id;
    },
    //url:function(){
    //   return this.urlRoot+this.api_key+'/'+this.id;
@@ -58,20 +58,20 @@ app.collections.ReportForms = Backbone.Collection.extend({
     fetchForms: function(options) {
         options || (options = {});
         this.key = options.key;
-        this.user_id = 0;
+        this.user = '';
         this.fetch(options);
     },
     fetchAssigned: function(options) {
         options || (options = {});
         this.key = options.key;
-        this.user_id = options.user_id;
+        this.user = options.user;
         this.fetch(options);
     },
     // override fetch url for addtional uri elements
     url:function() {
         // build url
-        if(this.user_id > 0){
-         return app.config.API+'assignments/'+this.key+'/'+this.user_id;
+        if(this.user != ''){
+         return app.config.API+'assignments/'+this.key+'/'+this.user;
         }
         else{
          return app.config.API+'forms/'+this.key+'/'+app.config.UserRoles;

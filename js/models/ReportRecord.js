@@ -22,10 +22,10 @@
  *
  */
 app.models.ReportRecord = Backbone.Model.extend({
-   urlRoot: app.config.API+'record/',
+   urlRoot: app.config.API+'record/'+app.config.APIKey,
    defaults:{
       id:null,
-      api_key:0,
+      api_key:app.config.APIKey,
       form_id:0,
       meta:null,
       record_date: null,

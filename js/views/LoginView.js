@@ -54,6 +54,7 @@ app.views.LoginView = Backbone.View.extend({
             type:'POST',
             dataType:"json",
             data: formValues,
+            async: false,
             success:function (response) {
 
                 if(response.status == 'ok') {  // Access Granted

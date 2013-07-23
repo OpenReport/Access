@@ -33,15 +33,15 @@ var app = {
     init:(function() {
         // use mastasch pattern
         _.templateSettings = {
-		interpolate: /\{\{\=(.+?)\}\}/g,
-		evaluate: /\{\{(.+?)\}\}/g
+        interpolate: /\{\{\=(.+?)\}\}/g,
+        evaluate: /\{\{(.+?)\}\}/g
 		};
 
-        var router = new app.controller();
-        app.router = router;
+    var router = new app.controller();
+    app.router = router;
 
-        // bind a back button
-        $('#back-button').bind('click', function(e){
+    // bind a back button
+    $('#back-button').bind('click', function(e){
 		//if(App.UI.prevPage.length !== 0){
 			window.history.back();
 	    //}
@@ -79,7 +79,6 @@ var app = {
      *
      */
     nextDueDate:(function(as, ld, s, i){
-
         if(ld == null){ // return assigned date if no reports are files
             return moment(as).format('LL');
         }
@@ -95,10 +94,7 @@ var app = {
                 due = moment(ld).add('months', 1);
             break;
         }
-        console.log(due);
-
         return due.format('LL');
-
     }),
 
     /**

@@ -49,17 +49,17 @@ app.controller = Backbone.Router.extend({
 
     },
 	routes: {
-        "" : "login",
-        "login" : "login",
-        "settings" : "settings",
-        "about" : "about",
-        "menu" : "menu",
+		"" : "login",
+		"login" : "login",
+		"settings" : "settings",
+		"about" : "about",
+		"menu" : "menu",
 		"recentReports": "recentReports",
 		"reportForms": "reportForms",
 		"assignedForms": "assignedForms",
-		"form/:formId": "reportForm",
 		"report/:reportId":"recordView",
-		"newreport/:formId/:identity":"newReport"
+		"form/:formId": "reportForm",
+		"form/:formId/:identity":"reportForm"
 	},
 	login: function(){
 		app.pageView = new app.views.LoginView();
@@ -96,11 +96,7 @@ app.controller = Backbone.Router.extend({
 		app.data.forms = new app.collections.ReportForms();
 
 		app.pageView = new app.views.FormListView({view:'#reportAssignmentsView', collection: app.data.forms});
-		app.data.forms.fetchAssigned({'key':app.config.APIKey, 'user_id':app.config.UserId});
-	},
-	reportForm: function(formId){
-
-		app.pageView = new app.views.FormView({'model':app.data.forms.get(formId)}).render();
+		app.data.forms.fetchAssigned({'key':app.config.APIKey, 'user':localStorage["email"]});
 	},
 	recordView:function(reportId){
 		$.ajax({
@@ -111,15 +107,10 @@ app.controller = Backbone.Router.extend({
 			}
 		});
 	},
-	newReport:function(formId, identity){
-
-		app.data.form = new app.models.ReportForm({'api_key':app.config.APIKey, 'id':formId});
-		app.data.form.fetch({
-			'success':function(data){
-
-				app.pageView = new app.views.FormView({'model':app.data.form, 'identity':identity}).render();
-			}
-		});
+	reportForm: function(formId, identity){
+		app.data.form = new app.models.ReportForm({'api_key':app.config.APIKey, 'form_id':formId });
+		app.pageView = new app.views.FormView({'model':app.data.form, identity:identity	});
+		app.data.form.fetch();
 	}
 
 });
