@@ -282,7 +282,8 @@
     <!-- RUN -->
     <script type="text/javascript">
         function formatReportData(value, type, options){
-            if('undefined' == typeof value ) return '--';
+            // catch anything that can error out
+            if('undefined' == typeof value) return '--';
             retValue = value;
             if(type === 'media:image'){
                 if(value !==''){
@@ -294,6 +295,7 @@
                 }
             }
             if('undefined' != typeof options){
+                if(options.length == 0) return '--';
                 retValue = '';
                 if('string' == typeof value) value = [value];
                 _.filter(value,
@@ -302,7 +304,6 @@
                         retValue = retValue + _.findWhere(options, {'value':obj}).label;
                     }
                 );
-
             }
 
             return retValue;

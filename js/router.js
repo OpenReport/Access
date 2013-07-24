@@ -27,25 +27,26 @@ app.controller = Backbone.Router.extend({
 
     before: function (route, params) {
         // remove prev page
-		if(app.pageView !== null){
-			app.pageView.destroy();
-		}
-		// check if authorized
-		if(app.config.APIKey === ''){
-			if(route !== 'about'){
-				window.location.replace('#login');
-			}
-			return false;
-		}
-		$(".loader").show();
+				if(app.pageView !== null){
+					app.pageView.destroy();
+				}
+				// check if authorized
+				if(app.config.APIKey === ''){
+					if(route !== 'about'){
+						window.location.replace('#login');
+					}
+					return false;
+				}
+				$(".loader").show();
     },
     after: function (route, params) {
-		if(route === '' || route === 'menu'){
-			$('#back-button').prop("disabled", true);
-		}
-		else{
-			$('#back-button').prop("disabled", false);
-		}
+				if(route === '' || route === 'menu'){
+					$('#back-button').prop("disabled", true);
+				}
+				else{
+					$('#back-button').prop("disabled", false);
+				}
+				$('#messages').empty();
 
     },
 	routes: {
