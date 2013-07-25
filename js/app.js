@@ -79,7 +79,7 @@ var app = {
      *
      */
     nextDueDate:(function(as, ld, s, i){
-        if(ld == null){ // return assigned date if no reports are files
+        if(ld === null){ // return assigned date if no reports are filed
             return moment(as).format('LL');
         }
         var due;

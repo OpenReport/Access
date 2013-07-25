@@ -93,6 +93,11 @@ app.views.FormView = Backbone.View.extend({
         $(".loader").show();
         $('#messages').hide();
         var base = this;
+        // force all identites to uppercase
+        if(base.model.attributes.identity_name !== ''){
+            $("input#"+this.model.attributes.identity_name).val($("input#"+this.model.attributes.identity_name).val().toUpperCase());
+        }
+
         $.validateForm($("#"+this.model.attributes.meta.name),
             function(){  // success
                 $('.imageCapture').remove();
@@ -103,6 +108,7 @@ app.views.FormView = Backbone.View.extend({
                     api_key:app.config.APIKey,
                     form_id:base.model.attributes.id,
                     report_version:base.model.attributes.report_version,
+                    identity_name: base.model.attributes.identity_name,
                     identity: $('#'+base.model.attributes.identity_name).val(),
                     meta:$("#"+base.model.attributes.meta.name).serializeObject(),
                     user: localStorage["email"],
