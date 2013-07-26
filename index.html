@@ -13,7 +13,7 @@
         <!-- OpenReport Specific -->
         <script type="text/javascript" src="js/lib/OpenReport.builder.js"></script>
         <script type="text/javascript" src="js/lib/OpenReport.validate.js"></script>
-        <script type="text/javascript" src="js/lib/OpenLayers.mobile.js"></script>
+        <script type="text/javascript" src="js/lib/OpenLayers.js"></script>
     </head>
 
     <body>
@@ -215,44 +215,28 @@
 
 
     <script type="text/javascript">
-//$(function(){
-    console.log($('#map').data('lat'));
+
     var lon = $('#map').data('lon');
     var lat = $('#map').data('lat');
 
-// });
-    var map, layer;
-    //function init(){
-    map = new OpenLayers.Map( 'map' );
-    layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
-    map.addLayer(layer);
-    map.setCenter(
-        new OpenLayers.LonLat(lon, lat).transform(
-            new OpenLayers.Projection("EPSG:4326"),
-            map.getProjectionObject()
-        ), 10
-    );
-var markers = new OpenLayers.Layer.Markers( "Markers" );
-            map.addLayer(markers);
-            //var markers = new OpenLayers.Layer.Markers( "Markers" );
-    //map.addLayer(markers);
-    //
-    //markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat)));
-    //map.setCenter (lonLat, 2);
-    //}
-    //map = new OpenLayers.Map("map");
-    //map.addLayer(new OpenLayers.Layer.OSM('MAP'));
-    //
-    //var lonLat = new OpenLayers.LonLat( lon, lat )
-    //      .transform(
-    //        new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-    //        map.getProjectionObject() // to Spherical Mercator Projection
-    //      );
-    //
-    //
-    //
-    //map.setCenter (lonLat, 16);
+    var map, layer, latlon;
+        map = new OpenLayers.Map( 'map' );
+        layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
 
+        latlon = new OpenLayers.LonLat(lon, lat);
+
+        map.addLayer(layer);
+
+        var markers = new OpenLayers.Layer.Markers( "Markers" );
+
+        markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat)));
+        map.addLayer(markers);
+        map.setCenter(
+            latlon.transform(
+                new OpenLayers.Projection("EPSG:4326"),
+                map.getProjectionObject()
+            ), 10
+        );
     </script>
 
     </script>

@@ -96,7 +96,7 @@ app.views.RecordView = Backbone.View.extend({
 
     newReport: function(e){
 
-        app.router.navigate($(e.target).data('href'), true);
+        app.router.navigate($(e.currentTarget).data('href'), true);
     },
 
     back: function() {
