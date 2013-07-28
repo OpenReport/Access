@@ -159,7 +159,7 @@
         {{ _(forms).each(function(form) { }}
         <li>
           <a href="#form/{{= form.get('form_id')+(form.get('identity') != ''? '/'+form.get('identity'):'') }}">{{= form.get('title') }}<span class="pull-right icons">&#59238;</span><br/>
-           <small>{{= form.get('identity') !== '' ? 'For: '+form.get('identity')+' ' : ''  }}Due: {{= app.nextDueDate(form.get('date_assigned'),form.get('date_last_reported'),form.get('schedule'),form.get('repeat_schedule')) }}</small>
+           <small>{{= form.get('identity') !== '' ? 'For: '+form.get('identity')+' ' : ''  }} Due: {{= moment(form.get('date_next_report').date).format('LL') }}</small>
           </a>
         </li>
         {{ }); }}
