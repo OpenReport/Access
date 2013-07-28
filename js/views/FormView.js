@@ -71,7 +71,6 @@ app.views.FormView = Backbone.View.extend({
         // set idenity if any
         $("input#"+this.model.attributes.identity_name).val(typeof this.identity !== 'undefined'? this.identity:'');
 
-
         // assign OTF Uploading
         $('img.capture-btn').each(function(){
             $(this).bind('click', function(e){
@@ -93,9 +92,12 @@ app.views.FormView = Backbone.View.extend({
         $(".loader").show();
         $('#messages').hide();
         var base = this;
+        var identity = '';
         // force all identites to uppercase
         if(base.model.attributes.identity_name !== ''){
-            $("input#"+this.model.attributes.identity_name).val($("input#"+this.model.attributes.identity_name).val().toUpperCase());
+            identity = $("input#"+this.model.attributes.identity_name).val().toUpperCase();
+            $("input#"+this.model.attributes.identity_name).val(identity);
+
         }
 
         $.validateForm($("#"+this.model.attributes.meta.name),
@@ -109,7 +111,7 @@ app.views.FormView = Backbone.View.extend({
                     form_id:base.model.attributes.id,
                     report_version:base.model.attributes.report_version,
                     identity_name: base.model.attributes.identity_name,
-                    identity: $('#'+base.model.attributes.identity_name).val(),
+                    identity: identity,
                     meta:$("#"+base.model.attributes.meta.name).serializeObject(),
                     user: localStorage["email"],
                     record_date: now,
