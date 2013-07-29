@@ -19,7 +19,7 @@
 
 app.config.Version = "1.0";
 /** SETTINGS **/
-app.config.API = "http://api.openreport.local/";
+app.config.API = "http://m.openreport.local/api/";
 app.config.Media = !!app.userMedia;
 app.config.GPS = 'geolocation' in navigator;
 app.config.PagingSize = 10;
