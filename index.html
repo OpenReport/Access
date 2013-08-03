@@ -27,6 +27,7 @@
             </div>
             <div class="container">
                 <div id="errors" class="alerts" style="display: none"></div>
+                <section id="hidden-content" style="display: none"></section>
                 <section id="page-content" class="content"></section>
                 <div id="messages" class="alerts" style="display: none"></div>
             </div>
@@ -41,10 +42,10 @@
         <h2><small>{{= account_name }}</small></h2>
         <ul class="list">
         <li>
-        <a class="is-active" href="#assignedForms">Assigned Report<span class="pull-right icons single-line">&#59238;</span></a>
+        <a class="is-active" href="#reportForms">Reporting Forms<span class="pull-right icons single-line">&#59238;</span></a>
         </li>
         <li>
-        <a class="is-active" href="#reportForms">Reporting Forms<span class="pull-right icons single-line">&#59238;</span></a>
+        <a class="is-active" href="#assignedForms">Assigned Report<span class="pull-right icons single-line">&#59238;</span></a>
         </li>
         <li>
         <a class="is-active" href="#recentReports">Recent Reports<span class="pull-right icons single-line">&#59238;</span></a>
@@ -154,7 +155,7 @@
 
     <script id="reportAssignmentsView" type="text/template">
     <div class="view">
-      <h3 class="view-header">Assigened Reports</h3>
+      <h3 class="view-header">Assigned Reports</h3>
       <ul class="list">
         {{ _(forms).each(function(form) { }}
         <li>
@@ -214,32 +215,42 @@
     </div>
 
 
-    <script type="text/javascript">
+        <script type="text/javascript">
 
-    var lon = $('#map').data('lon');
-    var lat = $('#map').data('lat');
+        var lon = $('#map').data('lon');
+        var lat = $('#map').data('lat');
 
-    var map, layer, latlon;
-        map = new OpenLayers.Map( 'map' );
-        layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
+        var map, layer, latlon;
+            map = new OpenLayers.Map( 'map' );
+            layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
 
-        latlon = new OpenLayers.LonLat(lon, lat);
+            latlon = new OpenLayers.LonLat(lon, lat);
 
-        map.addLayer(layer);
+            map.addLayer(layer);
 
-        var markers = new OpenLayers.Layer.Markers( "Markers" );
+            var markers = new OpenLayers.Layer.Markers( "Markers" );
 
-        markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat)));
-        map.addLayer(markers);
-        map.setCenter(
-            latlon.transform(
-                new OpenLayers.Projection("EPSG:4326"),
-                map.getProjectionObject()
-            ), 10
-        );
+            markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat)));
+            map.addLayer(markers);
+            map.setCenter(
+                latlon.transform(
+                    new OpenLayers.Projection("EPSG:4326"),
+                    map.getProjectionObject()
+                ), 10
+            );
+        </script>
+
+    </script>
+    <script id="identityList" type="text/template">
+        <select id="{{= listId }}" size="10">
+            <option value="">SELECT</option>
+            {{ _(list).each(function(item) { }}
+            <option value="{{= item.identity }}">{{= item.identity }} - {{= item.description }}</option>
+            {{ }); }}
+        </select>
     </script>
 
-    </script>
+
     <script id="reportForm" type="text/template">
     <div class="view">
       <h3 class="view-header">{{= title }} Report</h3>

@@ -46,6 +46,7 @@ app.views.FormListView = Backbone.View.extend({
 app.views.FormView = Backbone.View.extend({
     el: '#page-content',
     model: null,
+    intentities: null,
     identity: '',
     initialize: function(options){
         options || (options = {});
@@ -54,23 +55,59 @@ app.views.FormView = Backbone.View.extend({
     },
 
     render: function () {
-        // get geolocation
+        var base = this;
 
+        // get geolocation
         if (navigator.geolocation){
             navigator.geolocation.getCurrentPosition(function(position){
                 app.geo = {lon:position.coords.longitude, lat:position.coords.latitude}
             });
         }
-
-        // display the form
+        // build and display the form
         var template = _.template($("#reportForm").html(), this.model.attributes);
         $(this.el).html(template);
         $("#"+this.model.attributes.meta.name).buildForm(this.model.attributes.meta);
-        // add the submit button
-        $("#"+this.model.attributes.meta.name).append('<button id="submitForm" type="submit">Submit</button>');
-        // set idenity if any
-        $("input#"+this.model.attributes.identity_name).val(typeof this.identity !== 'undefined'? this.identity:'');
+        // Does this form have an identity?
+        if(typeof this.model.attributes.identity_name === 'string'){
+            var identity_name = this.model.attributes.identity_name; // create shorthand
 
+            // set idenity if any from assignments and lock down
+            if(typeof this.identity !== 'undefined'){
+                $("input#"+identity_name).val(this.identity);
+            }
+            else{
+                // pull identity list for lookup GET: /api/identities/{apiKey}/{identity_name}
+                $.ajax({
+                    url: app.config.API+'identities/'+app.config.APIKey+'/'+identity_name,
+                    type: 'get',
+                    dataType:'json',
+                    success: function(response){
+                        base.intentities = response.data;
+                        // assign click event for lookup
+                        var params = {listId:'identities', list:response.data};
+                        $("#hidden-content").html(_.template($("#identityList").html(), params));
+                        $('#identities').on('change', function(){
+                            $('#hidden-content').hide();
+                            $("input#"+identity_name).val($('#identities').val());
+                        });
+
+                        $("input#"+identity_name).on('click', function(e){
+                            e.preventDefault()
+                            $('#hidden-content').show();
+                            $('#identities').trigger('click');
+                        });
+
+                    },
+                    failure: function(err){
+                        console.log(err);
+                        $('#errors').append(err);
+                    }
+                });
+
+
+            }
+
+        }
         // assign OTF Uploading
         $('img.capture-btn').each(function(){
             $(this).bind('click', function(e){
@@ -78,7 +115,8 @@ app.views.FormView = Backbone.View.extend({
             });
             otfUpload($(this).data('for'));
         });
-
+        // add the submit button
+        $("#"+this.model.attributes.meta.name).append('<button id="submitForm" type="submit">Submit</button>');
 
         $(".loader").hide();
         return this;
@@ -97,7 +135,6 @@ app.views.FormView = Backbone.View.extend({
         if(base.model.attributes.identity_name !== ''){
             identity = $("input#"+this.model.attributes.identity_name).val().toUpperCase();
             $("input#"+this.model.attributes.identity_name).val(identity);
-
         }
 
         $.validateForm($("#"+this.model.attributes.meta.name),
@@ -132,6 +169,8 @@ app.views.FormView = Backbone.View.extend({
     },
 
     destroy: function(){
+        $('#hidden-content').unbind();
+        $('#hidden-content').empty();
         $(this.el).unbind();
         $(this.el).empty();
     }
