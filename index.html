@@ -25,7 +25,7 @@
                     <h1>OpenReport</h1>
                 </header>
             </div>
-            <div class="container">
+            <div class="container" style="overflow-x: hidden;" >
                 <div id="errors" class="alerts" style="display: none"></div>
                 <section id="hidden-content" style="display: none"></section>
                 <section id="page-content" class="content"></section>
@@ -175,8 +175,8 @@
 
         {{ _(reports).each(function(report) { }}
         <li>
-            <a href="#report/{{= report.attributes.id }}">{{= report.attributes.title }}<span class="pull-right icons">&#59238;</span><br/>
-            <small>{{= report.attributes.identity }}</small>
+            <a href="#report/{{= report.attributes.id }}">{{= report.attributes.title }} {{= report.attributes.identity }}<span class="pull-right icons">&#59238;</span><br/>
+            <small>{{= moment(report.attributes.record_date.date).format('ll') }}</small>
             </a>
         </li>
         {{ }); }}
@@ -189,7 +189,7 @@
     </script>
     <script id="report" type="text/template">
     <div class="view">
-      <h3 class="view-header">{{= title }} Report <small>V.{{= record.report_version }}</small></h3>
+      <h3 class="view-header">{{= title }} Report <small>v{{= record.report_version }}</small></h3>
         <table>
             {{_(headers[0].fields).each(function(col){ if(col !== 'id') }}
             <tr><td><strong>{{= col.display }}:</strong></td><td> {{= formatReportData(record.meta[col.name], col.type, col.values ) }}</td></tr>

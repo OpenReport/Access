@@ -75,7 +75,7 @@ app.views.FormView = Backbone.View.extend({
             if(typeof this.identity !== 'undefined'){
                 $("input#"+identity_name).val(this.identity);
             }
-            else{
+            else if(identity_name !== ''){
                 // pull identity list for lookup GET: /api/identities/{apiKey}/{identity_name}
                 $.ajax({
                     url: app.config.API+'identities/'+app.config.APIKey+'/'+identity_name,

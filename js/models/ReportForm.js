@@ -27,6 +27,7 @@ app.models.ReportForm = Backbone.Model.extend({
    defaults:{
       id:null,
       title:'',
+      identity_name: '',
       description:'',
       date_created:'',
       api_key:null
